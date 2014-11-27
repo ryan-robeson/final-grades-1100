@@ -1,6 +1,6 @@
 (defproject final-grades-1100 "0.1.0-SNAPSHOT"
   :description "Create an Excel file that will please Sam"
-  :url "http://example.com/FIXME"
+  :url "https://github.com/ryan-robeson/final-grades-1100"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.5.1"]
