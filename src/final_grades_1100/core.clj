@@ -66,11 +66,9 @@
 		  (concat row (list letter-grade))))
 
 (defn attendance-bump
-	[row]
-	(let [attendance-start 36
-		  attendance-length 14
-		  letter-grade (last row)
-		  perfect-attendance (not (some #(= 0 %) (take attendance-length (drop (- attendance-start 1) row))))
+	[row attendance-start attendance-length]
+	(let [letter-grade (last row)
+		  perfect-attendance (not (some #(= 0 %) (take attendance-length (drop attendance-start row))))
 		  new-grade (when perfect-attendance
 		  				(cond
 		  					(= "A-" letter-grade) "A"
@@ -88,15 +86,19 @@
 		  	row)))
 
 (defn prepare-fields
-	[fields]
-	(for [row fields]
-		  (attendance-bump (add-letter-grade (drop 1 (drop-last 2 (fix-name-fields (map #(parseDouble %) row))))))))
+	[fields header]
+	(let [attendance-start (first (keep-indexed #(when (re-matches #"WK01" %2) %1) header))
+			attendance-length (reduce + (filter #(not (nil? %1)) (map #(when (re-find #"WK\d\d" %1) 1 ) header)))]
+		(for [row fields]
+		  	(attendance-bump (add-letter-grade (drop 1 (drop-last 2 (fix-name-fields (map #(parseDouble %) row)))))
+		  		attendance-start
+		  		attendance-length))))
 
 (defn parse-file
 	[p]
 	(let [data (parse-csv (slurp p))
 		  header (prepare-header (first data))
-		  fields (prepare-fields (rest data))]
+		  fields (prepare-fields (rest data) header)]
 		  (into [] (map vec (concat (list header) fields)))))
 
 (defn insert-grades

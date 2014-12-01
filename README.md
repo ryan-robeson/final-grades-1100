@@ -25,7 +25,8 @@ Grades -> Enter Grades -> Export
 5. __Do not__ rename the CSV as it is used by the script to name the sheets in the workbook.
 
 ### Perform any necessary adjustments to script
-* The relevant lines must be changed if the number of assignments or number of weeks differs from the script's expectations (23 HWs and 14 Weeks)
+* The relevant lines must be changed if the number of assignments or ~~number of weeks~~ differs from the script's expectations (23 HWs and ~~14 Weeks~~)
+    * The number of attendance weeks should be automatically calculated per file now.
 
 ### Run
 `lein deps`
