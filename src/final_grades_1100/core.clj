@@ -86,13 +86,14 @@
 		  	row)))
 
 (defn prepare-fields
-	[fields header]
-	(let [attendance-start (first (keep-indexed #(when (re-matches #"WK01" %2) %1) header))
-			attendance-length (reduce + (filter #(not (nil? %1)) (map #(when (re-find #"WK\d\d" %1) 1 ) header)))]
-		(for [row fields]
-		  	(attendance-bump (add-letter-grade (drop 1 (drop-last 2 (fix-name-fields (map #(parseDouble %) row)))))
-		  		attendance-start
-		  		attendance-length))))
+ [fields header]
+ (let [attendance-start (first (keep-indexed #(when (re-matches #"WK01" %2) %1) header))
+  attendance-length (reduce + (filter #(not (nil? %1)) (map #(when (re-find #"WK\d\d" %1) 1 ) header)))]
+  (sort-by first
+   (for [row fields]
+    (attendance-bump (add-letter-grade (drop 1 (drop-last 2 (fix-name-fields (map #(parseDouble %) row)))))
+     attendance-start
+     attendance-length)))))
 
 (defn parse-file
 	[p]
