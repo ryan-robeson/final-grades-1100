@@ -1,7 +1,7 @@
 (ns final-grades-1100.core
 	(:gen-class)
 	(:require [dk.ative.docjure.spreadsheet :refer :all]
-		[clojure-csv.core :refer [parse-csv]]
+		[clojure-csv.core :refer [parse-csv write-csv]]
 		[clojure.tools.trace :refer [deftrace]]))
 
 (defn round
@@ -102,11 +102,22 @@
 		  fields (prepare-fields (rest data) header)]
 		  (into [] (map vec (concat (list header) fields)))))
 
+; Writes the given rows to a CSV file
+; named after the section "016_grades.csv"
+(defn to-csv-file!
+  [section rows]
+  (spit (str section "_grades.csv") (write-csv (map #(map #'str %1) rows))))
+
+; Inserts grades in the given workbook.
+; Also creates separate csv files for each
+; section for further analysis outside of Excel.
 (defn insert-grades
 	[workbook p]
 	(let [data (parse-file p)
-		  sheet (add-sheet! workbook (sheet-name-from-path p))]
-		  (add-rows! sheet data)))
+      section (sheet-name-from-path p)
+		  sheet (add-sheet! workbook section)]
+		  (add-rows! sheet data)
+      (to-csv-file! section data)))
 
 (defn generate-grades-file
 	[paths]
